@@ -26,8 +26,10 @@ const userSchema = new mongoose.Schema({
         default: 'subscriber'
     },
     resetPasswordLink: {
-        data: String,
-        default: ''
+        data: {
+            type: String,
+            default: ''
+        },
     },
 }, { timestamps: true });
 
