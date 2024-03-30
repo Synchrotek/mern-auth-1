@@ -1,5 +1,5 @@
 import './App.css'
-import RoutePages from './components/RoutePages'
+import RoutePages from './RoutePages'
 
 function App() {
   return (
