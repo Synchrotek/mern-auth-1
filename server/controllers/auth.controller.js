@@ -6,8 +6,8 @@ const transporter = nodemailer.createTransport({
     host: "sandbox.smtp.mailtrap.io",
     port: 2525,
     auth: {
-        user: process.env.NODEMAILER_SMTP_USER,
-        pass: process.env.NODEMAILER_SMTP_PASSWORD,
+        user: process.env.MAILTRAP_SMTP_USER,
+        pass: process.env.MAILTRAP_SMTP_PASSWORD,
     },
 });
 
@@ -127,5 +127,31 @@ exports.accountActivation = (req, res) => {
 }
 
 exports.signin = (req, res) => {
+    const { email, password } = req.body;
+    User.findOne({ email }).then(user => {
+        // check if user exists
+        if (!user) {
+            return res.status(400).json({
+                error: 'User with that email does not exist. Please signup'
+            })
+        }
+        // if user exists authenticate
+        if (!user.authenticate(password)) {
+            return res.status(400).json({
+                error: 'Email and Password do not match'
+            })
+        }
+        // generate a token and send to client
+        const token = jwt.sign(
+            { _id: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+        const { _id, name, email, role } = user;
 
+        return res.json({
+            token,
+            user: { _id, name, email, role }
+        })
+    })
 }
