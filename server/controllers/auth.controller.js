@@ -38,22 +38,14 @@ const transporter = nodemailer.createTransport({
 
 exports.signup = (req, res) => {
     const { name, email, password } = req.body;
+    res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
+
     User.findOne({ email }).then(async (user) => {
         if (user) {
             return res.status(400).json({
                 error: 'Email is taken'
             });
         }
-
-        // let info = await transporter.sendMail({
-        //     from: '"Sam 202 👻" <sam202@ethereal.email>', // sender address
-        //     to: "bar@example.com, baz@example.com", // list of receivers
-        //     subject: "Hello ✔", // Subject line
-        //     text: "Hello world?", // plain text body
-        //     html: "<b>Hello world?</b>", // html body
-        // });
-        // console.log(`Message sent: ${info.messageId}`);
-        // rss.json(info);
 
         const token = jwt.sign(
             { name, email, password },

@@ -6,6 +6,11 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = express();
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    optionsSuccessStatus: 200, // For legacy browser support
+}));
+
 
 // connect to DB -----------------------------------
 mongoose.connect(process.env.MONGO_URI, {})
@@ -18,7 +23,6 @@ const authRoutes = require('./routes/auth.route.js');
 // app middlewares ---------------------------------
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-// app.use(cors()); // allows all origins
 if (process.env.NODE_ENV === 'development') {
     app.use(cors({ origin: `http://localhost:4500` }));
 }
