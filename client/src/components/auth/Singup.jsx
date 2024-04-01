@@ -23,25 +23,19 @@ const Singup = () => {
     const clickSubmit = async (e) => {
         e.preventDefault();
         setValues({ ...values, buttonText: 'Submitting' })
-        // axios({method: 'POST', url: })
-
-
         const dataToSend = { name: values.name, email: values.email, password: values.password }
         await axios({
             method: 'POST',
             url: `${import.meta.env.VITE_BACKEND_ENDPOINT}/signup`,
             data: dataToSend
         }).then(response => {
-            console.log('------------------------------ Debugger 2')
-            console.log(response);
-            console.log('------------------------------ Debugger 3')
-            // console.log('SIGNU SUCCESS', response);
+            console.log('SIGNIN SUCCESS', response);
             setValues(
                 { ...values, name: '', email: '', password: '', buttonText: 'Submitted' }
             );
             toast.success(response.data.message);
         }).catch(err => {
-            // console.log('SIGNU ERROR', err.response.data);
+            console.log('SIGNIN ERROR', err.response.data);
             setValues({ ...values, buttonText: 'Submit' });
             toast.error(err.response.data.error);
         });

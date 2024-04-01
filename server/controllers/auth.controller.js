@@ -38,7 +38,6 @@ const transporter = nodemailer.createTransport({
 
 exports.signup = (req, res) => {
     const { name, email, password } = req.body;
-    res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
 
     User.findOne({ email }).then(async (user) => {
         if (user) {
@@ -87,28 +86,35 @@ exports.signup = (req, res) => {
 };
 
 exports.accountActivation = (req, res) => {
+    res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
     const { token } = req.body;
 
     if (token) {
         jwt.verify(token, process.env.JWT_ACCOUNT_ACTIVATION, function (err, decoded) {
-            if (err) {
-                console.log('JWT VERIFY IN ACCOUNT ACTIVATION ERROR', err);
-                return res.status(401).json({
-                    error: 'Expired link. Please Singup again'
-                })
-            }
-
             const { name, email, password } = jwt.decode(token);
-            const user = new User({ name, email, password })
-            user.save().then(result => {
-                return res.json({
-                    message: 'Signup success. Please Singin'
-                });
-            }).catch(err => {
-                console.log('SAVE USER IN ACCOUNT ACTIVATION ERROR', err);
-                return res.status(401).json({
-                    error: 'Error saving use in our databse. Try Singup again'
-                });
+            User.findOne({ email }).then(async (existingUser) => {
+                if (existingUser) {
+                    return res.status(400).json({
+                        error: 'Account is already activated! Pleae SingIn.'
+                    });
+                }
+                if (err) {
+                    // console.log('JWT VERIFY IN ACCOUNT ACTIVATION ERROR', err);
+                    return res.status(401).json({
+                        error: 'Expired link. Please Singup again'
+                    })
+                }
+                const user = new User({ name, email, password });
+                user.save().then(result => {
+                    return res.json({
+                        message: 'Signup Activation success. Please Singin'
+                    });
+                }).catch(err => {
+                    console.log('SAVE USER IN ACCOUNT ACTIVATION ERROR', err);
+                    return res.status(401).json({
+                        error: 'Error saving use in our databse. Try Singup again'
+                    });
+                })
             });
         });
     } else {
