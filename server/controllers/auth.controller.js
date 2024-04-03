@@ -1,6 +1,7 @@
 const User = require('../models/user.model.js');
 const jwt = require('jsonwebtoken');
 const { expressjwt: ejwt } = require('express-jwt');
+const lodashLib = require('lodash');
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
@@ -56,11 +57,11 @@ exports.signup = (req, res) => {
         const emailDataToSend = {
             from: `"Sentinal Prime HQ👻" ${process.env.EMAIL_FROM}`, // sender address
             to: email,
-            subject: `Hello ✔`,
+            subject: `Account Activation Link ✔`,
             text: "Account Activation Link",
             html: `
                 <h1>Click on the below link</h1>
-                <h3>To save yourself from Icon of Sin</h3>
+                <h3>To Activate your Account</h3>
                 <a href="${process.env.CLIENT_URL}/auth/activate/${token}">
                     Click here to Activate your account to Continue.
                 </a>
@@ -111,8 +112,8 @@ exports.accountActivation = (req, res) => {
                     });
                 }).catch(err => {
                     console.log('SAVE USER IN ACCOUNT ACTIVATION ERROR', err);
-                    return res.status(401).json({
-                        error: 'Error saving use in our databse. Try Singup again'
+                    return res.status(400).json({
+                        error: 'Error saving user in our databse. Try Singup again'
                     });
                 })
             });
@@ -177,4 +178,105 @@ exports.requireSigninAsAdmin = (req, res, next) => {
                 error: err.message
             })
         })
+}
+
+exports.forgotPassword = (req, res) => {
+    const { email } = req.body;
+    User.findOne({ email })
+        .then((user) => {
+            if (!user) {
+                throw new Error("User with that email doesn't exists");
+            }
+            return user;
+
+        }).then((user) => {
+            const token = jwt.sign(
+                { _id: user._id },
+                process.env.JWT_RESET_PASSWORD,
+                { expiresIn: '10m' }
+            );
+
+            const emailDataToSend = {
+                from: `"Sentinal Prime HQ👻" ${process.env.EMAIL_FROM}`, // sender address
+                to: email,
+                subject: `Password Reset Link ✔`,
+                text: "Password Reset Link",
+                html: `
+                    <h1>Click on the below link</h1>
+                    <h3>To reset your password</h3>
+                    <a href="${process.env.CLIENT_URL}/auth/activate/${token}">
+                        Click here to Activate your account to Continue.
+                    </a>
+                    <p>${process.env.CLIENT_URL}/auth/password/reset/${token}</p>
+                    <br /><hr /><br />
+                    <p>This email is kind of sensitive</p>
+                    <p>Handle with care && Have a good Day ;)</p>
+                    <p>${process.env.CLIENT_URL}</p>
+                `,
+            }
+
+            return user.updateOne({ resetPasswordToken: token })
+                .then(async (success) => {
+                    await transporter.sendMail(emailDataToSend)
+                        .then(emailSent => {
+                            console.log("RESET PASSWORD EMAIL SENT", emailSent);
+                            return res.json({
+                                message: `Email has been sent to ${email}. Follow the instruction to Reset your password`
+                            });
+                        }).catch(err => {
+                            // console.log('RESET PASSWORD EMAIL SENT ERROR', err)
+                            return res.json({
+                                message: err.message
+                            })
+                        })
+                }).catch(err => {
+                    console.log('RESET PASSWORD LINK ERROR', err);
+                    return res.status(401).json({
+                        error: 'Ddatabase connection error on user password forgot request'
+                    })
+                })
+        }).catch(err => {
+            return res.status(401).json({
+                error: err.message
+            })
+        })
+}
+
+exports.resetPassword = (req, res) => {
+    const { resetPasswordToken, newPassword } = req.body;
+    if (resetPasswordToken) {
+        jwt.verify(resetPasswordToken, process.env.JWT_RESET_PASSWORD, function (err, decoded) {
+            if (err) {
+                return res.status(401).json({
+                    error: 'Expired link. Please try again'
+                })
+            }
+            User.findOne({ resetPasswordToken }).then((user) => {
+                if (!user) {
+                    throw new Error("The requested User doesn't exists");
+                }
+                return user;
+            }).then((user) => {
+                const updatedFields = {
+                    password: newPassword,
+                    resetPasswordToken: ''
+                }
+                user = lodashLib.extend(user, updatedFields);
+                user.save().then(result => {
+                    return res.json({
+                        message: `Graet! Now you can login with your New Password`
+                    });
+                }).catch(err => {
+                    console.log('SAVE USER IN ACCOUNT ACTIVATION ERROR', err);
+                    return res.status(400).json({
+                        error: 'Error resetting User Passsword in database'
+                    });
+                })
+            }).catch(err => {
+                return res.status(401).json({
+                    error: 'Something went wrong, Please Try later'
+                })
+            })
+        });
+    }
 }
