@@ -21,6 +21,9 @@ mongoose.connect(process.env.MONGO_URI, {})
 const authRoutes = require('./routes/auth.route.js');
 const userRoutes = require('./routes/user.route.js');
 
+// Import global middlewares -----------------------
+const { setClientHeader } = require('./validators/index.validator.js');
+
 // app middlewares ---------------------------------
 app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -29,8 +32,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // middlewares -------------------------------------
-app.use('/api', authRoutes);
-app.use('/api', userRoutes);
+app.use('/api', setClientHeader, authRoutes);
+app.use('/api', setClientHeader, userRoutes);
 
 const PORT = process.env.PORT || 4500;
 app.listen(PORT, () => {

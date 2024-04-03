@@ -87,7 +87,6 @@ exports.signup = (req, res) => {
 };
 
 exports.accountActivation = (req, res) => {
-    res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
     const { token } = req.body;
 
     if (token) {
