@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Link, redirect } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import Layout from '../Layout'
 import axios from 'axios'
+import { isAuth } from './helper'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -79,6 +80,7 @@ const Singup = () => {
         <Layout>
             <div className="col-d-6 offset-md-1">
                 <ToastContainer />
+                {isAuth() ? <Navigate to='/' /> : null}
                 <h1 className='p-5 text-center'>Signup</h1>
                 {signupForm()}
             </div>

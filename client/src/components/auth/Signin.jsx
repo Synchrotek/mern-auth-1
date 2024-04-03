@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import { Link, redirect } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import Layout from '../Layout'
 import axios from 'axios'
+import { authenticate, isAuth } from './helper'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 const Singin = () => {
+    const navigate = useNavigate();
     const [values, setValues] = useState({
         email: 'biswajitswain348@gmail.com',
         password: '123456',
@@ -29,12 +31,17 @@ const Singin = () => {
             data: dataToSend
         }).then(response => {
             console.log('SIGNIN SUCCESS', response);
-
             // save the response (user, token) localstorage/cookie
-            setValues(
-                { ...values, name: '', email: '', password: '', buttonText: 'signned in' }
-            );
-            toast.success(`Hey ${response.data.user.name}, Welcome back`);
+            authenticate(response, () => {
+                setValues(
+                    { ...values, name: '', email: '', password: '', buttonText: 'signned in' }
+                );
+                toast.success(`Hey ${response.data.user.name}, Welcome back!`);
+                {
+                    isAuth() && isAuth().role === 'admin' ?
+                        (navigate('/admin')) : (navigate('/private'))
+                }
+            });
         }).catch(err => {
             console.log('SIGNUP ERROR', err.response.data);
             setValues({ ...values, buttonText: 'Sign in' });
@@ -71,6 +78,7 @@ const Singin = () => {
         <Layout>
             <div className="col-d-6 offset-md-1">
                 <ToastContainer />
+                {isAuth() ? <Navigate to='/' /> : null}
                 <h1 className='p-5 text-center'>Signin</h1>
                 {signinForm()}
             </div>
