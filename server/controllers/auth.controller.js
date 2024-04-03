@@ -1,5 +1,6 @@
 const User = require('../models/user.model.js');
 const jwt = require('jsonwebtoken');
+const { expressjwt: ejwt } = require('express-jwt');
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
@@ -152,4 +153,28 @@ exports.signin = (req, res) => {
             user: { _id, name, email, role }
         })
     })
+}
+
+exports.requireSignin = ejwt({
+    // user data will be available in req.auth
+    secret: process.env.JWT_SECRET,
+    algorithms: ['HS256']
+})
+
+exports.requireSigninAsAdmin = (req, res, next) => {
+    User.findById(req.auth._id)
+        .then(user => {
+            if (!user) {
+                throw new Error('User not found');
+            }
+            if (user.role !== 'admin') {
+                throw new Error('Admin resource. Access denied');
+            }
+            res.profile = user;
+            next();
+        }).catch(err => {
+            return res.json({
+                message: err.message
+            })
+        })
 }
