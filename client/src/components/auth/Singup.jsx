@@ -69,7 +69,7 @@ const Singup = () => {
             </div>
 
             <div>
-                <button className='btn, btn-primary' onClick={clickSubmit}>
+                <button className='btn btn-primary' onClick={clickSubmit}>
                     {values.buttonText}
                 </button>
             </div>
@@ -83,6 +83,11 @@ const Singup = () => {
                 {isAuth() ? <Navigate to='/' /> : null}
                 <h1 className='p-5 text-center'>Signup</h1>
                 {signupForm()}
+                <br />
+                <Link to="/signin"
+                    className='btn btn-sm btn-outline-info'
+                >Already have an account?
+                </Link>
             </div>
         </Layout>
     )

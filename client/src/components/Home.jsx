@@ -4,11 +4,13 @@ import Layout from './Layout'
 const Home = () => {
     return (
         <>
-            <div>
-                <Layout>
-                    <h1>Hello React</h1>
-                </Layout>
-            </div>
+            <Layout>
+                <div className="col-d-6 offset-md-1 text-center">
+                    <h1 className='p-5'>
+                        Home Page
+                    </h1>
+                </div>
+            </Layout>
         </>
     )
 }

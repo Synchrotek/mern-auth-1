@@ -119,7 +119,7 @@ const UserProfile = () => {
 
             <div>
                 <button style={{ cursor: 'pointer' }}
-                    className='btn, btn-primary' onClick={clickSubmit}>
+                    className='btn btn-primary' onClick={clickSubmit}>
                     {updateMode ? 'Update' : values.buttonText}
                 </button>
             </div>

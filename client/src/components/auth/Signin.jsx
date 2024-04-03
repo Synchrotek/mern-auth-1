@@ -67,7 +67,7 @@ const Singin = () => {
             </div>
 
             <div>
-                <button className='btn, btn-primary' onClick={clickSubmit}>
+                <button className='btn btn-primary' onClick={clickSubmit}>
                     {values.buttonText}
                 </button>
             </div>
@@ -81,6 +81,11 @@ const Singin = () => {
                 {isAuth() ? <Navigate to='/' /> : null}
                 <h1 className='p-5 text-center'>Signin</h1>
                 {signinForm()}
+                <br />
+                <Link to="/auth/password/forogt"
+                    className='btn btn-sm btn-outline-danger'
+                >Forgot Password?
+                </Link>
             </div>
         </Layout>
     )

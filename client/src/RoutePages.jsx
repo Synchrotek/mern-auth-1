@@ -8,6 +8,8 @@ import Private from './components/Private'
 import PrivateRoutes, { AdminPrivateRoutes } from './PrivateRoleRoutes'
 import AdminProfile from './components/AdminProfile'
 import UserProfile from './components/UserProfile'
+import ForgotPassword from './components/auth/ForgotPassword'
+import ResetPassword from './components/auth/ResetPassword'
 
 const RoutePages = () => {
     return (
@@ -17,6 +19,8 @@ const RoutePages = () => {
                 <Route path='/signup' element={<Singup />} />
                 <Route path='/signin' element={<Singin />} />
                 <Route path='/auth/activate/:token' element={<Activate />} />
+                <Route path='/auth/password/forogt' element={<ForgotPassword />} />
+                <Route path='/auth/password/reset/:token' element={<ResetPassword />} />
 
                 {/* Private Routes ------------------------------- */}
                 <Route element={<PrivateRoutes />}>

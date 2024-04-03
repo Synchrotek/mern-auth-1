@@ -191,7 +191,7 @@ exports.forgotPassword = (req, res) => {
 
         }).then((user) => {
             const token = jwt.sign(
-                { _id: user._id },
+                { _id: user._id, name: user.name },
                 process.env.JWT_RESET_PASSWORD,
                 { expiresIn: '10m' }
             );
@@ -204,7 +204,7 @@ exports.forgotPassword = (req, res) => {
                 html: `
                     <h1>Click on the below link</h1>
                     <h3>To reset your password</h3>
-                    <a href="${process.env.CLIENT_URL}/auth/activate/${token}">
+                    <a href="${process.env.CLIENT_URL}/auth/password/reset/${token}">
                         Click here to Activate your account to Continue.
                     </a>
                     <p>${process.env.CLIENT_URL}/auth/password/reset/${token}</p>
