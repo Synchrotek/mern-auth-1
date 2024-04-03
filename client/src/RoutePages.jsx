@@ -6,7 +6,8 @@ import Singin from './components/auth/Signin'
 import Activate from './components/auth/Activate'
 import Private from './components/Private'
 import PrivateRoutes, { AdminPrivateRoutes } from './PrivateRoleRoutes'
-import Admin from './components/Admin'
+import AdminProfile from './components/AdminProfile'
+import UserProfile from './components/UserProfile'
 
 const RoutePages = () => {
     return (
@@ -20,11 +21,12 @@ const RoutePages = () => {
                 {/* Private Routes ------------------------------- */}
                 <Route element={<PrivateRoutes />}>
                     <Route path='/private' element={<Private />} />
+                    <Route path='/user' element={<UserProfile />} />
                 </Route>
 
                 {/* Private Routes for admin roles --------------- */}
                 <Route element={<AdminPrivateRoutes />}>
-                    <Route path='/admin' element={<Admin />} />
+                    <Route path='/admin' element={<AdminProfile />} />
                 </Route>
             </Routes>
         </BrowserRouter>

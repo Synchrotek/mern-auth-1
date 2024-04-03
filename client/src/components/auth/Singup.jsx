@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
-import Layout from '../Layout'
-import axios from 'axios'
-import { isAuth } from './helper'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios'
+import Layout from '../Layout'
+import { isAuth } from './helper'
 
 const Singup = () => {
     const [values, setValues] = useState({

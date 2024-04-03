@@ -4,10 +4,7 @@ import Layout from './Layout'
 const Private = () => {
   return (
     <Layout>
-      <h1>
-        Private page
-      </h1>
-    </Layout>
+      <h1>Private Route</h1></Layout>
   )
 }
 

@@ -28,10 +28,10 @@ exports.updateUser = (req, res) => {
             throw new Error('Name is required');
         }
         user.name = name;
-        // if (password.length < 6) {
-        //     throw new Error('Password should be 6 characters long');
-        // }
-        // user.password = password;
+        if (password.length < 6) {
+            throw new Error('Password should be 6 characters long');
+        }
+        user.password = password;
         return user;
     }).then((user) => {
         user.save().then(updatedUser => {

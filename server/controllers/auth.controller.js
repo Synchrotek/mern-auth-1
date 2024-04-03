@@ -143,7 +143,8 @@ exports.signin = (req, res) => {
         const token = jwt.sign(
             { _id: user._id },
             process.env.JWT_SECRET,
-            { expiresIn: '7d' }
+            { expiresIn: '7d' },
+
         );
         const { _id, name, email, role } = user;
 
@@ -172,8 +173,8 @@ exports.requireSigninAsAdmin = (req, res, next) => {
             res.profile = user;
             next();
         }).catch(err => {
-            return res.json({
-                message: err.message
+            return res.status(401).json({
+                error: err.message
             })
         })
 }

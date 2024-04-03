@@ -2,7 +2,7 @@ import React from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { isAuth } from './components/auth/helper'
 
-const PrivateRoutes = ({ component: Component, ...rest }) => {
+const PrivateRoutes = () => {
     return (<>
         {isAuth() ?
             (< Outlet />) : (

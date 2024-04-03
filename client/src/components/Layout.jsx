@@ -27,8 +27,8 @@ const Layout = ({ children }) => {
             )}
 
             {isAuth() && isAuth().role === 'subscriber' && (
-                <li className={`nav-item ${isActive('/private') ? 'bg-success' : 'bg-info'}`}>
-                    <Link className="nav-link text-white" to='/private'>
+                <li className={`nav-item ${isActive('/user') ? 'bg-success' : 'bg-info'}`}>
+                    <Link className="nav-link text-white" to='/user'>
                         {isAuth().name}
                     </Link>
                 </li>

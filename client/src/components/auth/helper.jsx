@@ -43,7 +43,7 @@ export const removeLocalStorage = (key) => {
 // authenticate user by passing data to cookie and localstorage during signin
 export const authenticate = (response, callback) => {
     console.log('AUTHENTICATE HELPER ON SIGNUP RESPONSE', response);
-    setCookie('token', response.data.user);
+    setCookie('token', response.data.token);
     setLocalStorage('user', response.data.user);
     callback();
 }
@@ -67,4 +67,15 @@ export const signout = (callback) => {
     removeCookie('token');
     removeLocalStorage('user');
     callback();
+}
+
+// update user in localstrorage ---------------------------------------------------
+export const updateUser = (response, next) => {
+    console.log('UPDATE USER IN LOCALSTORAGE HELPERS', response);
+    if (typeof window !== 'undefined') {
+        let userData = JSON.parse(localStorage.getItem('user'));
+        userData = response.data
+        localStorage.setItem('user', JSON.stringify(userData))
+    }
+    next();
 }

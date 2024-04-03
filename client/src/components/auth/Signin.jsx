@@ -39,7 +39,7 @@ const Singin = () => {
                 toast.success(`Hey ${response.data.user.name}, Welcome back!`);
                 {
                     isAuth() && isAuth().role === 'admin' ?
-                        (navigate('/admin')) : (navigate('/private'))
+                        (navigate('/admin')) : (navigate('/user'))
                 }
             });
         }).catch(err => {
